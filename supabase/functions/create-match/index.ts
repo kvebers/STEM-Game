@@ -57,6 +57,7 @@ Deno.serve(async (req) => {
 
   const seed = crypto.getRandomValues(new Uint32Array(1))[0];
   const questions = generateQuestionSetForNode(tier, seed, QUESTION_COUNT);
+  const aiScore = aiBaselineScore(stageAnimal.elo_threshold, QUESTION_COUNT);
 
   const { data: match, error: matchError } = await db
     .from('matches')
@@ -69,7 +70,7 @@ Deno.serve(async (req) => {
       question_count: QUESTION_COUNT,
       player1_id: user.id,
       player1_animal_stage: tier,
-      ai_baseline_score: aiBaselineScore(stageAnimal.elo_threshold, QUESTION_COUNT),
+      ai_baseline_score: aiScore,
       started_at: new Date().toISOString(),
     })
     .select('id')
@@ -96,5 +97,10 @@ Deno.serve(async (req) => {
     matchId: match.id,
     topicName: node.topicName,
     questions: questions.map((q, index) => ({ index, prompt: q.prompt })),
+    // Cosmetic only — drives the client-side race animation, not scoring
+    // (that's already fixed server-side above). Safe to expose: it's the
+    // AI's own aggregate target, not the player's answer key.
+    aiBaselineScore: aiScore,
+    seed,
   });
 });
