@@ -3,8 +3,8 @@ import { supabase, invokeFunction } from '../api/supabaseClient.js';
 
 const initialState = {
   matchId: null,
-  subjectId: null,
-  stageTier: null,
+  tier: null, // the learning-tree node/animal being played
+  topicName: null,
   questions: [], // [{ index, prompt }] — no answer, that lives server-side only
   currentIndex: 0,
   questionStartedAt: null,
@@ -17,14 +17,14 @@ const initialState = {
 export const useMatchStore = create((set, get) => ({
   ...initialState,
 
-  startAiMatch: async ({ subjectId, stageTier, animalStageTier }) => {
+  startAiMatch: async (tier) => {
     set({ ...initialState, submitting: true });
     try {
-      const data = await invokeFunction('create-match', { subjectId, stageTier, animalStageTier });
+      const data = await invokeFunction('create-match', { tier });
       set({
         matchId: data.matchId,
-        subjectId,
-        stageTier,
+        tier,
+        topicName: data.topicName,
         questions: data.questions,
         currentIndex: 0,
         questionStartedAt: Date.now(),

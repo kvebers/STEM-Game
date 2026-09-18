@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../state/useAuthStore.js';
 import { useCollectionStore } from '../state/useCollectionStore.js';
 import { EllyBadge } from '../components/EllyBadge.jsx';
-import { AnimalCard } from '../components/AnimalCard.jsx';
+import { AnimalTree } from '../components/AnimalTree.jsx';
 
 export function DashboardScreen() {
   const navigate = useNavigate();
@@ -33,12 +33,8 @@ export function DashboardScreen() {
             {!hasPlayableAnimal && (
               <p className="muted">All your animals need re-hatching — play to earn Elly back and revive one.</p>
             )}
-            <h2 className="section-title">Your animals</h2>
-            <div className="animal-grid">
-              {animals.map((animal) => (
-                <AnimalCard key={animal.stage_tier} animal={animal} />
-              ))}
-            </div>
+            <h2 className="section-title">Your learning tree</h2>
+            <AnimalTree animals={animals} />
           </>
         )
       )}

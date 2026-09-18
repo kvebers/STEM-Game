@@ -1,7 +1,7 @@
 function statusLabel(animal) {
-  if (!animal.unlocked) return `Locked · needs ${animal.elo_threshold} Elly`;
+  if (!animal.unlocked) return `${animal.topic_name} · needs ${animal.elo_threshold} Elly`;
   if (!animal.alive) return 'Needs re-hatching';
-  return `Tier ${animal.stage_tier}`;
+  return animal.topic_name;
 }
 
 export function AnimalCard({ animal, selectable = false, selected = false, onSelect }) {

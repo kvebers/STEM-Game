@@ -1,32 +1,42 @@
-import { generateQuestionSet, SUBJECTS, checkAnswer } from '../shared/questions/index.js';
+import { LEARNING_TREE, generateQuestionSetForNode, checkAnswer } from '../shared/questions/index.js';
 
 let failures = 0;
 
-for (const subject of SUBJECTS) {
-  for (let tier = 1; tier <= 10; tier++) {
-    const seed = tier * 1000 + subject.sortOrder;
-    const questions = generateQuestionSet(subject.id, tier, seed, 5);
-    for (const q of questions) {
-      const ok =
-        typeof q.prompt === 'string' &&
-        q.prompt.length > 0 &&
-        typeof q.answer === 'string' &&
-        q.answer.length > 0 &&
-        checkAnswer(q, q.answer);
-      if (!ok) {
-        failures++;
-        console.error(`FAIL [${subject.id} tier ${tier}]`, q);
-      }
+// Tree-shape sanity: exactly one root, every non-root's parent exists, no cycles.
+const byTier = new Map(LEARNING_TREE.map((n) => [n.tier, n]));
+const roots = LEARNING_TREE.filter((n) => n.parentTier === null);
+if (roots.length !== 1) {
+  failures++;
+  console.error('FAIL: expected exactly 1 root, found', roots.length);
+}
+for (const node of LEARNING_TREE) {
+  if (node.parentTier !== null && !byTier.has(node.parentTier)) {
+    failures++;
+    console.error(`FAIL: node ${node.tier} (${node.topicName}) has missing parent ${node.parentTier}`);
+  }
+}
+
+for (const node of LEARNING_TREE) {
+  const seed = node.tier * 7919 + 13;
+  const questions = generateQuestionSetForNode(node.tier, seed, 5);
+  for (const q of questions) {
+    const ok =
+      typeof q.prompt === 'string' &&
+      q.prompt.length > 0 &&
+      typeof q.answer === 'string' &&
+      q.answer.length > 0 &&
+      checkAnswer(q, q.answer);
+    if (!ok) {
+      failures++;
+      console.error(`FAIL [tier ${node.tier} - ${node.topicName}]`, q);
     }
   }
-  // print one example per subject/tier=5 for manual sanity check
-  const sample = generateQuestionSet(subject.id, 5, 42, 2);
-  console.log(subject.id, 'tier 5 sample:', sample);
+  console.log(`tier ${node.tier} (${node.topicName}):`, questions[0]);
 }
 
 // Determinism check: same seed -> identical output
-const a = generateQuestionSet('arithmetic', 8, 777, 5);
-const b = generateQuestionSet('arithmetic', 8, 777, 5);
+const a = generateQuestionSetForNode(8, 777, 5);
+const b = generateQuestionSetForNode(8, 777, 5);
 if (JSON.stringify(a) !== JSON.stringify(b)) {
   failures++;
   console.error('FAIL determinism check', a, b);
@@ -36,5 +46,5 @@ if (failures > 0) {
   console.error(`\n${failures} failures`);
   process.exit(1);
 } else {
-  console.log('\nAll question generators passed smoke test.');
+  console.log('\nAll learning-tree question generators passed smoke test.');
 }

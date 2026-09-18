@@ -13,6 +13,11 @@ const PARAMS = {
   8: { ops: ['+', '-', '*', '/'], terms: 3, addMax: 100, mulMax: 12, nonNegative: true, allowParens: true },
   9: { ops: ['+', '-', '*', '/'], terms: 3, addMax: 500, mulMax: 15, nonNegative: false, allowParens: true },
   10: { ops: ['+', '-', '*', '/'], terms: 4, addMax: 1000, mulMax: 20, nonNegative: false, allowParens: true },
+  // Pure single-operation tiers, used as their own standalone learning-tree
+  // topics ("Multiplication" / "Division") rather than a difficulty rung
+  // within a mixed-operation ladder.
+  11: { ops: ['*'], terms: 2, addMax: 12, mulMax: 12, nonNegative: true },
+  12: { ops: ['/'], terms: 2, addMax: 12, mulMax: 12, nonNegative: true },
 };
 
 const OP_SYMBOL = { '+': '+', '-': '−', '*': '×', '/': '÷' };
@@ -97,7 +102,7 @@ function generateOnce(rng, tier, params) {
 }
 
 export function generate(tier, rng) {
-  const params = PARAMS[Math.min(10, Math.max(1, tier))];
+  const params = PARAMS[Math.min(12, Math.max(1, tier))];
   for (let attempt = 0; attempt < 30; attempt++) {
     const result = generateOnce(rng, tier, params);
     if (result) return result;
