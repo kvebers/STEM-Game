@@ -494,7 +494,7 @@ button {
   text-decoration: none;
 }
 
-/* LearningScreen */
+/* LearningDetail (inline panel shown from the Dashboard's Learn mode) */
 .learning-detail {
   max-width: 480px;
   margin: 20px auto 0;

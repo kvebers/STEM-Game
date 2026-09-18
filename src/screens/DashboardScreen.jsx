@@ -4,6 +4,13 @@ import { useAuthStore } from '../state/useAuthStore.js';
 import { useCollectionStore } from '../state/useCollectionStore.js';
 import { useMatchStore } from '../state/useMatchStore.js';
 import { AnimalTree } from '../components/AnimalTree.jsx';
+import { LearningDetail } from '../components/LearningDetail.jsx';
+
+const MODES = {
+  practice: 'Practice (vs AI)',
+  compete: 'Compete (Live PvP)',
+  learn: '📖 Learn',
+};
 
 export function DashboardScreen() {
   const navigate = useNavigate();
@@ -11,7 +18,8 @@ export function DashboardScreen() {
   const { profile, animals, loading, error, fetchCollection } = useCollectionStore();
   const { startAiMatch, startPvpSearch, cancelPvpSearch, pvpSearching, questions, submitting, error: matchError } =
     useMatchStore();
-  const [wantsPvp, setWantsPvp] = useState(false);
+  const [mode, setMode] = useState('practice');
+  const [learningAnimal, setLearningAnimal] = useState(null);
 
   useEffect(() => {
     if (session?.user?.id) fetchCollection(session.user.id);
@@ -26,13 +34,25 @@ export function DashboardScreen() {
   const deadCount = animals.filter((a) => a.unlocked && !a.alive).length;
 
   const handlePick = async (animal) => {
+    if (mode === 'learn') {
+      setLearningAnimal(animal);
+      return;
+    }
     if (submitting || pvpSearching) return;
-    if (wantsPvp) {
+    if (mode === 'compete') {
       await startPvpSearch(animal.stage_tier);
     } else {
       await startAiMatch(animal.stage_tier);
       navigate('/challenge');
     }
+  };
+
+  const handlePracticeFromLearning = async () => {
+    const animal = learningAnimal;
+    setLearningAnimal(null);
+    setMode('practice');
+    await startAiMatch(animal.stage_tier);
+    navigate('/challenge');
   };
 
   if (pvpSearching) {
@@ -62,20 +82,37 @@ export function DashboardScreen() {
               </p>
             )}
             <div className="chip-row">
-              <button type="button" className={`chip ${!wantsPvp ? 'chip-selected' : ''}`} onClick={() => setWantsPvp(false)}>
-                Practice (vs AI)
-              </button>
-              <button type="button" className={`chip ${wantsPvp ? 'chip-selected' : ''}`} onClick={() => setWantsPvp(true)}>
-                Compete (Live PvP)
-              </button>
-              <button type="button" className="chip" onClick={() => navigate('/learning')}>
-                📖 Learn
-              </button>
+              {Object.entries(MODES).map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={`chip ${mode === key ? 'chip-selected' : ''}`}
+                  onClick={() => {
+                    setMode(key);
+                    setLearningAnimal(null);
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
             {submitting ? (
               <p className="muted spinner-row">Starting…</p>
             ) : (
-              <AnimalTree animals={animals} selectable onSelect={handlePick} />
+              <AnimalTree
+                animals={animals}
+                selectable
+                alwaysClickable={mode === 'learn'}
+                selectedTier={learningAnimal?.stage_tier ?? null}
+                onSelect={handlePick}
+              />
+            )}
+            {learningAnimal && (
+              <LearningDetail
+                animal={learningAnimal}
+                onClose={() => setLearningAnimal(null)}
+                onPractice={handlePracticeFromLearning}
+              />
             )}
           </>
         )

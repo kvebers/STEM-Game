@@ -6,7 +6,6 @@ import { AuthScreen } from './screens/AuthScreen.jsx';
 import { DashboardScreen } from './screens/DashboardScreen.jsx';
 import { ChallengeScreen } from './screens/ChallengeScreen.jsx';
 import { ResultsScreen } from './screens/ResultsScreen.jsx';
-import { LearningScreen } from './screens/LearningScreen.jsx';
 import { EllyBadge } from './components/EllyBadge.jsx';
 
 function TopBar() {
@@ -55,7 +54,6 @@ export default function App() {
         <TopBar />
         <Routes>
           <Route path="/" element={<DashboardScreen />} />
-          <Route path="/learning" element={<LearningScreen />} />
           <Route path="/challenge" element={<ChallengeScreen />} />
           <Route path="/results" element={<ResultsScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
