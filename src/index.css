@@ -1,0 +1,334 @@
+:root {
+  --color-bg: #0f1420;
+  --color-surface: #1a2033;
+  --color-surface-raised: #232b45;
+  --color-border: #303a5c;
+  --color-text: #f0f2f8;
+  --color-text-muted: #9aa3c0;
+  --color-accent: #ffb454;
+  --color-accent-strong: #ff9d2e;
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  --radius: 14px;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at top, #1c2340, var(--color-bg));
+  color: var(--color-text);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.app-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-emoji {
+  font-size: 1.6rem;
+}
+
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: #201200;
+}
+
+.btn-secondary {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.card-title {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.error-text {
+  color: var(--color-danger);
+  font-size: 0.9rem;
+}
+
+.spinner-row {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+  color: var(--color-text-muted);
+}
+
+/* EllyBadge */
+.elly-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 8px 16px;
+}
+
+.elly-badge-icon {
+  font-size: 1.1rem;
+}
+
+.elly-badge-value {
+  font-weight: 700;
+}
+
+.elly-badge-peak {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* AnimalCard */
+.animal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.animal-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text);
+}
+
+.animal-card-emoji {
+  font-size: 2.2rem;
+}
+
+.animal-card-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.animal-card-status {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.animal-card-locked {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
+.animal-card-dead {
+  opacity: 0.6;
+}
+
+.animal-card-dead .animal-card-emoji {
+  filter: grayscale(1);
+}
+
+.animal-card-selected {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+/* QuestionCard */
+.question-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.question-progress {
+  font-size: 0.85rem;
+}
+
+.question-prompt {
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.question-input {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.question-input:focus {
+  outline: 2px solid var(--color-accent);
+}
+
+/* AuthScreen */
+.auth-shell {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  max-width: 380px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* DashboardScreen */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 24px 0 12px;
+}
+
+/* PlaySetupScreen */
+.play-setup section + section {
+  margin-top: 8px;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+.chip-selected {
+  background: var(--color-accent);
+  color: #201200;
+  border-color: var(--color-accent);
+}
+
+.chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.start-btn {
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* ResultsScreen */
+.results-card {
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.results-headline {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.elo-delta {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.elo-delta.positive {
+  color: var(--color-success);
+}
+
+.elo-delta.negative {
+  color: var(--color-danger);
+}
+
+.unlock-banner {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius);
+  padding: 12px;
+  font-weight: 600;
+}
