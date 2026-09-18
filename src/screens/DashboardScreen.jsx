@@ -57,7 +57,7 @@ export function DashboardScreen() {
           <>
             {deadCount > 0 && (
               <p className="muted">
-                {deadCount === 1 ? 'One animal needs' : `${deadCount} animals need`} re-hatching — play with it to
+                {deadCount === 1 ? 'One animal needs' : `${deadCount} animals need`} re-hatching, play with it to
                 earn Elly back and revive it.
               </p>
             )}

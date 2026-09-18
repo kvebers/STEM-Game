@@ -54,7 +54,7 @@ export function ChallengeScreen() {
       <Timer startedAt={matchStartedAt} limitSeconds={MATCH_TIME_LIMIT_SECONDS} />
       {error && <p className="error-text">{error}</p>}
       {isPvp && opponentDisconnected && (
-        <p className="error-text">Your opponent seems to have disconnected — resolving shortly if they don't return…</p>
+        <p className="error-text">Your opponent seems to have disconnected, resolving shortly if they don't return…</p>
       )}
       <RaceTrack
         playerEmoji={playerAnimal?.art_key ?? '❓'}

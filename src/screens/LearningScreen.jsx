@@ -28,7 +28,7 @@ export function LearningScreen() {
   return (
     <div>
       <h2 className="section-title">Learn a topic</h2>
-      <p className="muted">Tap any animal — locked or not — to see why its topic matters and how to solve it.</p>
+      <p className="muted">Tap any animal, locked or not, to see why its topic matters and how to solve it.</p>
       <AnimalTree animals={animals} selectable alwaysClickable selectedTier={selected?.stage_tier ?? null} onSelect={setSelected} />
 
       {selected && content && (

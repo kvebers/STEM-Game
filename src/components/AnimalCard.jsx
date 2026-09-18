@@ -9,7 +9,7 @@ function isAtRisk(animal) {
 
 function statusLabel(animal) {
   if (!animal.unlocked) return `${animal.topic_name} · needs ${animal.elo_threshold} Elly`;
-  if (!animal.alive) return 'Needs re-hatching — play to revive';
+  if (!animal.alive) return 'Needs re-hatching, play to revive';
   if (isAtRisk(animal)) return `${animal.topic_name} · at risk of decay!`;
   return animal.topic_name;
 }
@@ -39,7 +39,7 @@ export function AnimalCard({ animal, selectable = false, selected = false, onSel
       disabled={!clickable}
     >
       {atRisk && (
-        <div className="animal-card-danger" title="At risk of decay — play soon to keep it alive" aria-hidden="true">
+        <div className="animal-card-danger" title="At risk of decay, play soon to keep it alive" aria-hidden="true">
           <span className="animal-card-danger-dot" />
           <span className="animal-card-danger-dot" />
           <span className="animal-card-danger-dot" />

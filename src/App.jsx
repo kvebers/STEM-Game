@@ -18,9 +18,6 @@ function TopBar() {
         <Link to="/" className="brand">
           <span className="brand-emoji">🍃</span> Elly
         </Link>
-        <Link to="/learning" className="btn btn-secondary">
-          📖 Learn
-        </Link>
       </div>
       <div className="top-bar-right">
         {profile && <EllyBadge current={profile.current_elo} peak={profile.peak_elo} />}
