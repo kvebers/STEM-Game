@@ -43,13 +43,17 @@ Deno.serve(async (req) => {
 
   const { data: animal } = await db
     .from('user_animals')
-    .select('unlocked, alive')
+    .select('unlocked')
     .eq('user_id', user.id)
     .eq('stage_tier', tier)
     .maybeSingle();
 
-  if (!animal || !animal.unlocked || !animal.alive) {
-    return jsonResponse({ error: 'That animal is not currently unlocked and alive for this player' }, 403);
+  // Dead animals are still playable — playing is the recovery path (a
+  // completed match feeds/re-hatches via fn_apply_match_result). Gating on
+  // `alive` here would let a player's only unlocked animal dying lock them
+  // out of playing anything at all, with no way back in.
+  if (!animal || !animal.unlocked) {
+    return jsonResponse({ error: 'That animal is not currently unlocked for this player' }, 403);
   }
 
   const { data: stageAnimal } = await db.from('stage_animals').select('elo_threshold').eq('tier', tier).single();

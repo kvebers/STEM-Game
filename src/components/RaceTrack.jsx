@@ -13,14 +13,15 @@ function Lane({ label, emoji, progress }) {
 
 /**
  * A little visual race toward the food: each correct answer nudges the
- * runner forward. `opponentHits` is revealed progressively (only up to how
- * many questions the player has answered so far) so both racers advance in
- * step, question by question.
+ * runner forward. `opponentHits` is taken as-is — for AI mode the caller
+ * passes an already-revealed slice (in sync with the player's own pace,
+ * since the full sequence is precomputed upfront); for PvP it's the
+ * opponent's real live progress, which must NOT be capped to the player's
+ * own pace or a faster opponent's real lead would be hidden.
  */
 export function RaceTrack({ playerEmoji, playerName, playerHits, opponentEmoji, opponentName, opponentHits, questionCount }) {
   const playerProgress = playerHits.filter(Boolean).length / questionCount;
-  const revealedOpponentHits = opponentHits.slice(0, playerHits.length);
-  const opponentProgress = revealedOpponentHits.filter(Boolean).length / questionCount;
+  const opponentProgress = opponentHits.filter(Boolean).length / questionCount;
 
   return (
     <div className="race-track">

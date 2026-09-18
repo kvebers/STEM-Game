@@ -7,13 +7,13 @@ import { useMatchStore } from '../state/useMatchStore.js';
 export function ResultsScreen() {
   const navigate = useNavigate();
   const session = useAuthStore((s) => s.session);
-  const { result, questions, reset } = useMatchStore();
+  const { result, questions, mode, opponentAnimal, reset } = useMatchStore();
   const fetchCollection = useCollectionStore((s) => s.fetchCollection);
   const [newlyChanged, setNewlyChanged] = useState([]);
 
   useEffect(() => {
     if (!result) {
-      navigate('/play', { replace: true });
+      navigate('/', { replace: true });
       return;
     }
     const before = useCollectionStore.getState().animals;
@@ -47,7 +47,9 @@ export function ResultsScreen() {
     <div className="card results-card">
       <div className="results-headline">{won ? '🎉 You won!' : drew ? '🤝 Draw' : '💪 Good effort'}</div>
       <p className="muted">
-        You scored {result.player1_score}/{questions.length} against an AI baseline of {result.player2_score}.
+        You scored {result.player1_score}/{questions.length} against{' '}
+        {mode === 'pvp' ? opponentAnimal?.name ?? 'your opponent' : 'an AI baseline'} which scored{' '}
+        {result.player2_score}.
       </p>
       <div className={`elo-delta ${won ? 'positive' : drew ? '' : 'negative'}`}>
         {result.elo_delta_player1 > 0 ? '+' : ''}

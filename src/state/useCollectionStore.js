@@ -30,9 +30,13 @@ export const useCollectionStore = create((set, get) => ({
       if (animalsError) throw animalsError;
 
       const stageAnimals = get().stageAnimals;
+      // current_elo is denormalized onto each animal so AnimalCard can show
+      // a danger indicator without threading a separate prop through the
+      // 3D tree layer.
       const animals = (userAnimals ?? []).map((ua) => ({
         ...ua,
         ...stageAnimals.find((sa) => sa.tier === ua.stage_tier),
+        current_elo: profile.current_elo,
       }));
 
       set({ profile, animals, loading: false });
