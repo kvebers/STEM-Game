@@ -93,6 +93,30 @@ function tier12(rng) {
   return { prompt: `${base}^x = ${base ** x}`, answer: x };
 }
 
+// Inverse of tier12: same b^x = N relationship, asked as a logarithm instead.
+function tier13(rng) {
+  const base = randInt(rng, 2, 6);
+  const x = randInt(rng, 1, 6);
+  return { prompt: `log_${base}(${base ** x}) = x`, answer: x };
+}
+
+// Two-variable linear system, solved by elimination/substitution; only x is
+// asked for so the answer stays a single number. `a*e - b*d !== 0` keeps
+// the solution unique.
+function tier14(rng) {
+  const x = randInt(rng, -10, 10) || 1;
+  const y = randInt(rng, -10, 10) || 1;
+  const a = randInt(rng, 1, 9);
+  const d = randInt(rng, 1, 9);
+  let b = randInt(rng, 1, 9) * (rng() < 0.5 ? -1 : 1);
+  let e = randInt(rng, 1, 9) * (rng() < 0.5 ? -1 : 1);
+  while (a * e - b * d === 0) e += 1;
+  const c = a * x + b * y;
+  const f = d * x + e * y;
+  const prompt = `${a}x${signedTerm(b)}y = ${c}, ${d}x${signedTerm(e)}y = ${f}`;
+  return { prompt, answer: x };
+}
+
 const GENERATORS = {
   1: tier1,
   2: tier2,
@@ -106,10 +130,12 @@ const GENERATORS = {
   10: tier10,
   11: tier11,
   12: tier12,
+  13: tier13,
+  14: tier14,
 };
 
 export function generate(tier, rng, locale = 'en') {
-  const fn = GENERATORS[Math.min(12, Math.max(1, tier))];
+  const fn = GENERATORS[Math.min(14, Math.max(1, tier))];
   const { prompt, answer } = fn(rng, locale);
   return { prompt: phrases(locale).solveForX(prompt), answer: String(answer), tier };
 }

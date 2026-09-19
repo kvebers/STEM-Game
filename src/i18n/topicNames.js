@@ -26,6 +26,11 @@ const TOPIC_NAMES_FR = {
   Angles: 'Angles',
   Circles: 'Cercles',
   'Volume & Surface Area': 'Volume et aire de surface',
+  Logarithms: 'Logarithmes',
+  'Systems of Equations': "Systèmes d'équations",
+  'Z-Scores': 'Cotes Z',
+  'Trigonometric Ratios': 'Rapports trigonométriques',
+  'Law of Cosines': 'Loi des cosinus',
 };
 
 export function localizeTopicName(englishName, language) {

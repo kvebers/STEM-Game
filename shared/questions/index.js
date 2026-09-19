@@ -54,6 +54,12 @@ export const LEARNING_TREE = [
   { tier: 18, topicName: 'Angles', subjectId: 'geometry', internalTier: 2, parentTier: 17 },
   { tier: 19, topicName: 'Circles', subjectId: 'geometry', internalTier: 3, parentTier: 18 },
   { tier: 20, topicName: 'Volume & Surface Area', subjectId: 'geometry', internalTier: 4, parentTier: 19 },
+  // Advanced (12th-grade) continuations past each branch's prior capstone
+  { tier: 21, topicName: 'Logarithms', subjectId: 'algebra', internalTier: 13, parentTier: 14 },
+  { tier: 22, topicName: 'Systems of Equations', subjectId: 'algebra', internalTier: 14, parentTier: 21 },
+  { tier: 23, topicName: 'Z-Scores', subjectId: 'statistics', internalTier: 12, parentTier: 16 },
+  { tier: 24, topicName: 'Trigonometric Ratios', subjectId: 'geometry', internalTier: 5, parentTier: 20 },
+  { tier: 25, topicName: 'Law of Cosines', subjectId: 'geometry', internalTier: 6, parentTier: 24 },
 ];
 
 export function getTreeNode(tier) {

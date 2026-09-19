@@ -125,6 +125,16 @@ function tier11(rng, locale) {
   return { prompt: phrases(locale).stdDeviation(values.join(', ')), answer: String(d) };
 }
 
+// z = (value - mean) / std. Picking z first (nonzero, small integer) and
+// deriving value keeps the result a clean whole number.
+function tier12(rng, locale) {
+  const mean = randInt(rng, 20, 100);
+  const std = randInt(rng, 2, 15);
+  const z = randInt(rng, 1, 3) * (rng() < 0.5 ? -1 : 1);
+  const value = mean + z * std;
+  return { prompt: phrases(locale).zScore(value, mean, std), answer: String(z) };
+}
+
 const GENERATORS = {
   1: tier1,
   2: tier2,
@@ -137,10 +147,11 @@ const GENERATORS = {
   9: tier9,
   10: tier10,
   11: tier11,
+  12: tier12,
 };
 
 export function generate(tier, rng, locale = 'en') {
-  const fn = GENERATORS[Math.min(11, Math.max(1, tier))];
+  const fn = GENERATORS[Math.min(12, Math.max(1, tier))];
   const { prompt, answer } = fn(rng, locale);
   return { prompt, answer, tier };
 }

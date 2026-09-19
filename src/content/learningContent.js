@@ -104,6 +104,31 @@ const LEARNING_CONTENT_EN = {
     realWorld: ['Figuring out how much water a tank holds', 'Shipping and packing box sizes', 'Concrete needed to pour a foundation'],
     howTo: 'Volume of a rectangular prism = length × width × height. Every dimension multiplies together, so doubling one dimension doubles the whole volume.',
   },
+  21: {
+    why: 'A logarithm is just the question an exponential equation leaves unanswered: "what power gets me there?" Anywhere growth or decay is exponential, logarithms are how you solve for time or rate.',
+    realWorld: ['The Richter scale for earthquake magnitude', 'pH in chemistry', 'Solving for how long an investment takes to double'],
+    howTo: 'log_b(N) = x means the same thing as b^x = N. To solve, rewrite the logarithm as an exponential equation and find the missing exponent.',
+  },
+  22: {
+    why: 'Many real situations involve two unknowns tied together by two separate constraints — one equation alone can\'t pin either down, but the pair together can.',
+    realWorld: ['Finding a break-even point between two pricing plans', 'Mixing two solutions to hit a target concentration', 'Balancing a budget across two spending categories'],
+    howTo: 'Use elimination: multiply one or both equations so a variable\'s coefficients match, then subtract to cancel it out and solve for the variable that remains.',
+  },
+  23: {
+    why: 'A z-score says how many standard deviations a value sits from the mean, turning any bell-curve dataset into one common, comparable scale.',
+    realWorld: ['Comparing test scores across different exams', 'Flagging an unusually high or low lab result', 'Standardizing player stats across different sports seasons'],
+    howTo: 'z = (value − mean) ÷ standard deviation. A positive z means above average, negative means below, and the size tells you how unusual it is.',
+  },
+  24: {
+    why: 'Right-triangle trig connects an angle to the ratio between two sides, which is what makes it possible to find a distance or height you can\'t measure directly.',
+    realWorld: ['Finding a building\'s height from its shadow and the sun\'s angle', 'Aiming a ramp or roof at a specific slope', 'Navigation and surveying'],
+    howTo: 'SOHCAHTOA: sine = opposite ÷ hypotenuse, cosine = adjacent ÷ hypotenuse, tangent = opposite ÷ adjacent, all relative to the angle you\'re working with.',
+  },
+  25: {
+    why: 'The Law of Cosines extends the Pythagorean theorem to triangles that don\'t have a right angle, which is most of the triangles in the real world.',
+    realWorld: ['Triangulating a location from two known distances and a bearing angle', 'Structural engineering for trusses at odd angles', 'Golf and archery distance-and-angle calculations'],
+    howTo: 'c² = a² + b² − 2ab·cos(C), where C is the angle between sides a and b. Plug in the two known sides and the angle between them, then take the square root.',
+  },
 };
 
 const LEARNING_CONTENT_FR = {
@@ -206,6 +231,31 @@ const LEARNING_CONTENT_FR = {
     why: "Le volume mesure l'espace qu'occupe (ou que contient) un solide, l'étape naturelle suivante après le périmètre et l'aire à plat.",
     realWorld: ["Calculer combien d'eau contient un réservoir", "Les dimensions de boîtes d'expédition et d'emballage", 'Le béton nécessaire pour couler une fondation'],
     howTo: "Volume d'un pavé droit = longueur × largeur × hauteur. Chaque dimension se multiplie, donc doubler une dimension double tout le volume.",
+  },
+  21: {
+    why: "Un logarithme est simplement la question à laquelle une équation exponentielle ne répond pas : « quelle puissance m'y mène ? » Partout où la croissance ou la décroissance est exponentielle, les logarithmes permettent de résoudre pour le temps ou le taux.",
+    realWorld: ["L'échelle de Richter pour la magnitude des séismes", 'Le pH en chimie', 'Calculer combien de temps un investissement met à doubler'],
+    howTo: "log_b(N) = x signifie la même chose que b^x = N. Pour résoudre, réécrivez le logarithme sous forme d'équation exponentielle et trouvez l'exposant manquant.",
+  },
+  22: {
+    why: "Beaucoup de situations réelles impliquent deux inconnues liées par deux contraintes distinctes — une seule équation ne suffit pas à les déterminer, mais la paire ensemble le permet.",
+    realWorld: ['Trouver le point d’équilibre entre deux forfaits tarifaires', 'Mélanger deux solutions pour atteindre une concentration cible', 'Équilibrer un budget entre deux catégories de dépenses'],
+    howTo: "Utilisez l'élimination : multipliez une ou les deux équations pour que les coefficients d'une variable correspondent, puis soustrayez pour l'annuler et résoudre pour la variable restante.",
+  },
+  23: {
+    why: "Une cote z indique à combien d'écarts types une valeur se trouve de la moyenne, ce qui permet de comparer n'importe quel ensemble de données en cloche sur une même échelle commune.",
+    realWorld: ["Comparer des résultats d'examens différents", 'Repérer un résultat de laboratoire anormalement haut ou bas', 'Normaliser les statistiques de joueurs entre différentes saisons sportives'],
+    howTo: "z = (valeur − moyenne) ÷ écart type. Un z positif signifie au-dessus de la moyenne, négatif en dessous, et sa taille indique à quel point c'est inhabituel.",
+  },
+  24: {
+    why: "La trigonométrie du triangle rectangle relie un angle au rapport entre deux côtés, ce qui permet de trouver une distance ou une hauteur qu'on ne peut pas mesurer directement.",
+    realWorld: ["Trouver la hauteur d'un bâtiment à partir de son ombre et de l'angle du soleil", 'Orienter une rampe ou un toit selon une pente précise', 'Navigation et arpentage'],
+    howTo: "SOHCAHTOA : sinus = opposé ÷ hypoténuse, cosinus = adjacent ÷ hypoténuse, tangente = opposé ÷ adjacent, toujours par rapport à l'angle étudié.",
+  },
+  25: {
+    why: "La loi des cosinus généralise le théorème de Pythagore aux triangles qui n'ont pas d'angle droit, ce qui représente la plupart des triangles du monde réel.",
+    realWorld: ['Trianguler une position à partir de deux distances connues et d’un angle de relèvement', 'Ingénierie structurelle pour des fermes à angles inhabituels', 'Calculs de distance et d’angle au golf et au tir à l’arc'],
+    howTo: "c² = a² + b² − 2ab·cos(C), où C est l'angle entre les côtés a et b. Substituez les deux côtés connus et l'angle entre eux, puis prenez la racine carrée.",
   },
 };
 

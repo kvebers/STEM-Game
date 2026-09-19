@@ -82,13 +82,13 @@ function Scene({ nodes, selectable, selectedTier, onSelect, alwaysClickable }) {
       <PerspectiveCamera
         makeDefault
         fov={40}
-        position={[center[0] + radius * 1.5, center[1] + radius * 0.55, center[2] + radius * 2.5]}
+        position={[center[0] + radius * 1.65, center[1] + radius * 0.6, center[2] + radius * 2.75]}
       />
       <OrbitControls
         target={center}
         enablePan={false}
-        minDistance={radius * 1.6}
-        maxDistance={radius * 4.2}
+        minDistance={radius * 1.75}
+        maxDistance={radius * 4.6}
         maxPolarAngle={Math.PI * 0.52}
         autoRotate={!selectable}
         autoRotateSpeed={0.5}

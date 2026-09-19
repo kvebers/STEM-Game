@@ -32,6 +32,12 @@ const PHRASES = {
     prismVolume: (l, w, h) => `Find the volume of a rectangular prism with length ${l}, width ${w}, and height ${h}`,
     positiveConstraint: () => '(x > 0)',
     positiveSolutionNote: () => '(positive solution)',
+    zScore: (value, mean, std) =>
+      `A dataset is normally distributed with a mean of ${mean} and a standard deviation of ${std}. Find the z-score for a value of ${value}.`,
+    rightTriangleRatio: (ratio, opp, adj, hyp) =>
+      `A right triangle has legs of length ${opp} and ${adj} and a hypotenuse of length ${hyp}. For the acute angle opposite the side of length ${opp}, find ${ratio}(angle) as a fraction in lowest terms.`,
+    lawOfCosines: (a, b, angle) =>
+      `A triangle has two sides of length ${a} and ${b} with a ${angle}° angle between them. Find the length of the third side.`,
   },
   fr: {
     solveForX: (equation) => `Résoudre pour x : ${equation}`,
@@ -61,6 +67,12 @@ const PHRASES = {
     prismVolume: (l, w, h) => `Trouvez le volume d'un pavé droit de longueur ${l}, de largeur ${w} et de hauteur ${h}`,
     positiveConstraint: () => '(x > 0)',
     positiveSolutionNote: () => '(solution positive)',
+    zScore: (value, mean, std) =>
+      `Un ensemble de données suit une loi normale de moyenne ${mean} et d'écart type ${std}. Trouvez la cote z pour une valeur de ${value}.`,
+    rightTriangleRatio: (ratio, opp, adj, hyp) =>
+      `Un triangle rectangle a des côtés de longueur ${opp} et ${adj} et une hypoténuse de longueur ${hyp}. Pour l'angle aigu opposé au côté de longueur ${opp}, trouvez ${ratio}(angle) sous forme de fraction irréductible.`,
+    lawOfCosines: (a, b, angle) =>
+      `Un triangle a deux côtés de longueur ${a} et ${b} avec un angle de ${angle}° entre eux. Trouvez la longueur du troisième côté.`,
   },
 };
 
