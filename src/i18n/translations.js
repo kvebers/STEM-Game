@@ -14,7 +14,7 @@ const TRANSLATIONS = {
     continueWithGoogle: 'Continue with Google',
 
     pvpSearchTitle: 'Live Match',
-    modePractice: 'Practice (vs AI)',
+    modePractice: 'Practice',
     modeCompete: 'Compete',
     modeLearn: '📖 Learn',
     searchingOpponent: 'Searching for an opponent…',
@@ -101,7 +101,7 @@ const TRANSLATIONS = {
     continueWithGoogle: 'Continuer avec Google',
 
     pvpSearchTitle: 'Match en direct',
-    modePractice: "Entraînement (contre l'IA)",
+    modePractice: 'Entraînement',
     modeCompete: 'Compétition',
     modeLearn: '📖 Apprendre',
     searchingOpponent: "Recherche d'un adversaire…",
