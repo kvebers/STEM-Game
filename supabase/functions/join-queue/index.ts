@@ -62,11 +62,16 @@ Deno.serve(async (req) => {
   // this ever raced with another setup attempt, the unique constraint on
   // match_questions(match_id, index) rejects the second writer, and the
   // conditional status update below only succeeds once.
-  const { data: match } = await db.from('matches').select('status').eq('id', matchId).single();
+  const { data: match } = await db.from('matches').select('status, stage_tier').eq('id', matchId).single();
 
   if (match?.status === 'pending') {
+    // fn_join_queue may have resolved the match to a *different* tier than
+    // either player individually requested (broadened matching pairs
+    // players across a shared subject, not just an exact tier) — the
+    // question set must be generated for the match's real topic, not the
+    // raw request.
     const seed = crypto.getRandomValues(new Uint32Array(1))[0];
-    const questions = generateQuestionSetForNode(tier, seed, QUESTION_COUNT);
+    const questions = generateQuestionSetForNode(match.stage_tier, seed, QUESTION_COUNT);
 
     const { error: questionsError } = await db
       .from('match_questions')

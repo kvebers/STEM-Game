@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { supabase, invokeFunction } from '../api/supabaseClient.js';
 import { createRng, shuffle } from '../../shared/questions/prng.js';
+import { getTreeNode } from '../../shared/questions/index.js';
 import { subscribeToQueueRow, subscribeToMatchStatus, joinMatchChannel, broadcastAnswer } from '../realtime/pvp.js';
 
 // Deterministic (same seed -> same result) sequence of which questions the
@@ -143,7 +144,12 @@ export const useMatchStore = create((set, get) => ({
       .eq('tier', opponentAnimalStage)
       .single();
 
-    set({ matchId, isPlayer1, opponentAnimal, pvpSearching: false });
+    // Broadened matching (see fn_join_queue) can resolve the match to a
+    // different tier than either player individually requested — the
+    // heading must reflect what's actually being played, not the request.
+    const topicName = getTreeNode(match.stage_tier)?.topicName ?? null;
+
+    set({ matchId, isPlayer1, opponentAnimal, topicName, pvpSearching: false });
 
     if (match.status === 'active') {
       await get()._beginPvpChallenge(matchId);
