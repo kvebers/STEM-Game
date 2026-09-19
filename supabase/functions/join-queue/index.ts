@@ -52,7 +52,12 @@ Deno.serve(async (req) => {
   }
 
   if (!pairing.matched) {
-    return jsonResponse({ matched: false });
+    // fn_join_queue now swallows its own errors into reason:'error' instead
+    // of raising (see the harden_join_queue migration) so a transient DB
+    // hiccup keeps the search waiting instead of killing it outright — but
+    // still log it here so it's visible in function logs.
+    if (pairing.reason === 'error') console.error('fn_join_queue error:', pairing.detail);
+    return jsonResponse({ matched: false, reason: pairing.reason });
   }
 
   const matchId = pairing.matchId;
