@@ -259,16 +259,22 @@ button {
 }
 
 .auth-split-card {
-  max-width: 760px;
+  max-width: 900px;
   width: 100%;
   padding: 0;
-  overflow: hidden;
   display: flex;
+  /* overflow is NOT hidden here (unlike a plain .card) so the image
+     frame's glow below isn't clipped at the card's own edge; the frame
+     clips its own image instead, via its own border-radius + overflow. */
 }
 
 .auth-image-frame {
-  flex: 1 1 45%;
-  min-height: 320px;
+  flex: 1 1 48%;
+  min-height: 420px;
+  position: relative;
+  border-radius: var(--radius) 0 0 var(--radius);
+  overflow: hidden;
+  box-shadow: 0 0 70px 14px rgba(242, 177, 52, 0.4);
 }
 
 .auth-image {
@@ -279,12 +285,13 @@ button {
 }
 
 .auth-content {
-  flex: 1 1 55%;
+  flex: 1 1 52%;
   padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 12px;
+  border-radius: 0 var(--radius) var(--radius) 0;
 }
 
 .auth-content h2 {
@@ -308,11 +315,13 @@ button {
   }
 
   .auth-image-frame {
-    min-height: 200px;
+    min-height: 240px;
+    border-radius: var(--radius) var(--radius) 0 0;
   }
 
   .auth-content {
     padding: 24px;
+    border-radius: 0 0 var(--radius) var(--radius);
   }
 
   .auth-google-btn {
