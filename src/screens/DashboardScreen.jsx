@@ -78,6 +78,7 @@ export function DashboardScreen() {
   return (
     <div>
       {error && <p className="error-text">{error}</p>}
+      {matchError && <p className="error-text">{matchError}</p>}
       {loading && !profile ? (
         <div className="spinner-row">{t('loadingCollection')}</div>
       ) : (
