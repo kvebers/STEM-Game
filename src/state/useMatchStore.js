@@ -3,6 +3,7 @@ import { supabase, invokeFunction } from '../api/supabaseClient.js';
 import { createRng, shuffle } from '../../shared/questions/prng.js';
 import { getTreeNode } from '../../shared/questions/index.js';
 import { subscribeToQueueRow, subscribeToMatchStatus, joinMatchChannel, broadcastAnswer } from '../realtime/pvp.js';
+import { useLanguageStore } from './useLanguageStore.js';
 
 // Deterministic (same seed -> same result) sequence of which questions the
 // AI "gets right", summing to exactly its fixed baseline score. Purely
@@ -24,7 +25,7 @@ const initialState = {
   matchId: null,
   tier: null, // the learning-tree node/animal being played
   topicName: null,
-  questions: [], // [{ index, prompt }] — no answer, that lives server-side only
+  questions: [], // [{ index, prompt, options }] — options is null for free-text questions; no answer, that lives server-side only
   currentIndex: 0,
   questionStartedAt: null,
   matchStartedAt: null,
@@ -61,7 +62,7 @@ export const useMatchStore = create((set, get) => ({
     cleanup();
     set({ ...initialState, mode: 'ai', submitting: true });
     try {
-      const data = await invokeFunction('create-match', { tier });
+      const data = await invokeFunction('create-match', { tier, locale: useLanguageStore.getState().language });
       set({
         matchId: data.matchId,
         tier,
@@ -88,7 +89,7 @@ export const useMatchStore = create((set, get) => ({
 
     const attemptJoin = async () => {
       try {
-        const data = await invokeFunction('join-queue', { tier });
+        const data = await invokeFunction('join-queue', { tier, locale: useLanguageStore.getState().language });
         if (data.matched) {
           get()._onPvpMatched(data.matchId);
         }
@@ -165,7 +166,7 @@ export const useMatchStore = create((set, get) => ({
   _beginPvpChallenge: async (matchId) => {
     const { data: questions, error } = await supabase
       .from('match_questions')
-      .select('index, prompt')
+      .select('index, prompt, options')
       .eq('match_id', matchId)
       .order('index');
 

@@ -2,6 +2,11 @@ import { LEARNING_TREE, generateQuestionSetForNode, checkAnswer } from '../share
 
 let failures = 0;
 
+// Mirrors the normalization the `set_answer_correctness` SQL trigger
+// applies (lowercase, strip whitespace) — a distractor must never collide
+// with the real answer under this exact comparison.
+const normalize = (v) => String(v).trim().toLowerCase().replace(/\s+/g, '');
+
 // Tree-shape sanity: exactly one root, every non-root's parent exists, no cycles.
 const byTier = new Map(LEARNING_TREE.map((n) => [n.tier, n]));
 const roots = LEARNING_TREE.filter((n) => n.parentTier === null);
@@ -29,6 +34,22 @@ for (const node of LEARNING_TREE) {
     if (!ok) {
       failures++;
       console.error(`FAIL [tier ${node.tier} - ${node.topicName}]`, q);
+    }
+
+    const answerNorm = normalize(q.answer);
+    const distractors = q.distractors ?? [];
+    if (distractors.length !== 3) {
+      failures++;
+      console.error(`FAIL [tier ${node.tier} - ${node.topicName}] expected 3 distractors, got`, distractors);
+    }
+    const distractorNorms = distractors.map(normalize);
+    if (distractorNorms.some((d) => d === answerNorm)) {
+      failures++;
+      console.error(`FAIL [tier ${node.tier} - ${node.topicName}] a distractor matches the real answer`, q);
+    }
+    if (new Set(distractorNorms).size !== distractorNorms.length) {
+      failures++;
+      console.error(`FAIL [tier ${node.tier} - ${node.topicName}] duplicate distractors`, distractors);
     }
   }
   console.log(`tier ${node.tier} (${node.topicName}):`, questions[0]);

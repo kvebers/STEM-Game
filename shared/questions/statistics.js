@@ -1,4 +1,5 @@
 import { randInt, shuffle, gcd } from './prng.js';
+import { phrases } from './i18n.js';
 
 function reduceFraction(num, den) {
   const g = gcd(num, den);
@@ -18,42 +19,42 @@ function meanDataset(rng, count, max) {
   return { values: shuffle(rng, values), mean: values.reduce((a, b) => a + b, 0) / count };
 }
 
-function tier1(rng) {
+function tier1(rng, locale) {
   const { values, mean } = meanDataset(rng, 3, 15);
-  return { prompt: `Find the mean of: ${values.join(', ')}`, answer: String(mean) };
+  return { prompt: phrases(locale).findMean(values.join(', ')), answer: String(mean) };
 }
 
-function tier2(rng) {
+function tier2(rng, locale) {
   const { values, mean } = meanDataset(rng, 4, 20);
-  return { prompt: `Find the mean of: ${values.join(', ')}`, answer: String(mean) };
+  return { prompt: phrases(locale).findMean(values.join(', ')), answer: String(mean) };
 }
 
-function tier3(rng) {
+function tier3(rng, locale) {
   const values = shuffle(rng, Array.from({ length: 5 }, () => randInt(rng, 1, 50)));
   const sorted = values.slice().sort((a, b) => a - b);
-  return { prompt: `Find the median of: ${values.join(', ')}`, answer: String(sorted[2]) };
+  return { prompt: phrases(locale).findMedian(values.join(', ')), answer: String(sorted[2]) };
 }
 
-function tier4(rng) {
+function tier4(rng, locale) {
   const pool = shuffle(rng, Array.from({ length: 5 }, () => randInt(rng, 1, 12)));
   const modeValue = pool[0];
   const values = shuffle(rng, [...pool, modeValue, modeValue]);
-  return { prompt: `Find the mode of: ${values.join(', ')}`, answer: String(modeValue) };
+  return { prompt: phrases(locale).findMode(values.join(', ')), answer: String(modeValue) };
 }
 
-function tier5(rng) {
+function tier5(rng, locale) {
   const values = shuffle(rng, Array.from({ length: 6 }, () => randInt(rng, 1, 100)));
   const max = Math.max(...values);
   const min = Math.min(...values);
-  return { prompt: `Find the range of: ${values.join(', ')}`, answer: String(max - min) };
+  return { prompt: phrases(locale).findRange(values.join(', ')), answer: String(max - min) };
 }
 
-function tier6(rng) {
+function tier6(rng, locale) {
   const { values, mean } = meanDataset(rng, 7, 30);
-  return { prompt: `Find the mean of: ${values.join(', ')}`, answer: String(mean) };
+  return { prompt: phrases(locale).findMean(values.join(', ')), answer: String(mean) };
 }
 
-function tier7(rng) {
+function tier7(rng, locale) {
   // Even-length dataset: median is the average of the two middle values.
   // Pick those two middle values first (same parity so the average is a
   // whole number), then pick fillers strictly below/above them so their
@@ -65,17 +66,18 @@ function tier7(rng) {
   const above = [randInt(rng, m2 + 1, m2 + 30), randInt(rng, m2 + 1, m2 + 30)];
   const dataset = shuffle(rng, [...below, m1, m2, ...above]);
   const median = (m1 + m2) / 2;
-  return { prompt: `Find the median of: ${dataset.join(', ')}`, answer: String(median) };
+  return { prompt: phrases(locale).findMedian(dataset.join(', ')), answer: String(median) };
 }
 
-function tier8(rng) {
+function tier8(rng, locale) {
+  const p = phrases(locale);
   const scenarios = [
-    () => ({ prompt: 'A fair 6-sided die is rolled once. What is the probability of rolling a 4?', num: 1, den: 6 }),
+    () => ({ prompt: p.dieProbability(), num: 1, den: 6 }),
     () => {
       const red = randInt(rng, 2, 6);
       const blue = randInt(rng, 2, 6);
       return {
-        prompt: `A bag has ${red} red and ${blue} blue marbles. One marble is drawn at random. What is the probability it is red?`,
+        prompt: p.bagProbabilityOne(red, blue),
         num: red,
         den: red + blue,
       };
@@ -91,27 +93,36 @@ function factorial(n) {
   return r;
 }
 
-function tier9(rng) {
+function tier9(rng, locale) {
   if (rng() < 0.5) {
     const n = randInt(rng, 3, 6);
-    return { prompt: `In how many different orders can ${n} distinct books be arranged on a shelf?`, answer: String(factorial(n)) };
+    return { prompt: phrases(locale).bookOrders(n), answer: String(factorial(n)) };
   }
   const n = randInt(rng, 4, 8);
   const k = randInt(rng, 2, n - 1);
   const combinations = factorial(n) / (factorial(k) * factorial(n - k));
-  return { prompt: `How many ways can you choose ${k} items from a group of ${n}?`, answer: String(combinations) };
+  return { prompt: phrases(locale).combinations(k, n), answer: String(combinations) };
 }
 
-function tier10(rng) {
+function tier10(rng, locale) {
   const red = randInt(rng, 3, 6);
   const blue = randInt(rng, 3, 6);
   const total = red + blue;
   const num = red * (red - 1);
   const den = total * (total - 1);
   return {
-    prompt: `A bag has ${red} red and ${blue} blue marbles. Two marbles are drawn at random without replacement. What is the probability both are red?`,
+    prompt: phrases(locale).bagProbabilityTwo(red, blue),
     answer: reduceFraction(num, den),
   };
+}
+
+// Two pairs symmetric around the mean (mean-d, mean-d, mean+d, mean+d) give
+// a population variance of exactly d², so the standard deviation is d.
+function tier11(rng, locale) {
+  const d = randInt(rng, 2, 12);
+  const mean = randInt(rng, d + 5, 50);
+  const values = shuffle(rng, [mean - d, mean - d, mean + d, mean + d]);
+  return { prompt: phrases(locale).stdDeviation(values.join(', ')), answer: String(d) };
 }
 
 const GENERATORS = {
@@ -125,10 +136,11 @@ const GENERATORS = {
   8: tier8,
   9: tier9,
   10: tier10,
+  11: tier11,
 };
 
-export function generate(tier, rng) {
-  const fn = GENERATORS[Math.min(10, Math.max(1, tier))];
-  const { prompt, answer } = fn(rng);
+export function generate(tier, rng, locale = 'en') {
+  const fn = GENERATORS[Math.min(11, Math.max(1, tier))];
+  const { prompt, answer } = fn(rng, locale);
   return { prompt, answer, tier };
 }

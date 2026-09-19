@@ -1,0 +1,11 @@
+-- Nullable: a question with no options renders as free-text (today's
+-- behavior, unchanged); a question with options renders as multiple
+-- choice. Populated at question-generation time in the create-match /
+-- join-queue Edge Functions from shared/questions' generated distractors
+-- plus the real answer, shuffled together — see shared/questions/distractors.js.
+-- The real answer appearing here (unlike match_answer_keys, which stays
+-- service-role-only) is inherent to multiple choice: the client must see
+-- every candidate option to render buttons. Correctness is still decided
+-- solely by the existing set_answer_correctness trigger against
+-- match_answer_keys, so this column is never itself consulted for scoring.
+alter table match_questions add column options text[];

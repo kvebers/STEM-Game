@@ -5,12 +5,7 @@ import { useCollectionStore } from '../state/useCollectionStore.js';
 import { useMatchStore } from '../state/useMatchStore.js';
 import { AnimalTree } from '../components/AnimalTree.jsx';
 import { LearningDetail } from '../components/LearningDetail.jsx';
-
-const MODES = {
-  practice: 'Practice (vs AI)',
-  compete: 'Compete (Live PvP)',
-  learn: '📖 Learn',
-};
+import { useT } from '../i18n/translations.js';
 
 export function DashboardScreen() {
   const navigate = useNavigate();
@@ -20,6 +15,13 @@ export function DashboardScreen() {
     useMatchStore();
   const [mode, setMode] = useState('practice');
   const [learningAnimal, setLearningAnimal] = useState(null);
+  const t = useT();
+
+  const MODES = {
+    practice: t('modePractice'),
+    compete: t('modeCompete'),
+    learn: t('modeLearn'),
+  };
 
   useEffect(() => {
     if (session?.user?.id) fetchCollection(session.user.id);
@@ -57,12 +59,18 @@ export function DashboardScreen() {
 
   if (pvpSearching) {
     return (
-      <div className="card pvp-search-card">
-        <p>Searching for an opponent…</p>
-        {matchError && <p className="error-text">{matchError}</p>}
-        <button className="btn btn-secondary" onClick={cancelPvpSearch}>
-          Cancel
-        </button>
+      <div>
+        <h2 className="section-title">{t('pvpSearchTitle')}</h2>
+        <div className="pvp-search-wrap">
+          <div className="card pvp-search-card">
+            <img src="/elly.png" alt="" className="pvp-search-image" />
+            <p>{t('searchingOpponent')}</p>
+            {matchError && <p className="error-text">{matchError}</p>}
+            <button className="btn btn-secondary" onClick={cancelPvpSearch}>
+              {t('cancel')}
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -71,14 +79,13 @@ export function DashboardScreen() {
     <div>
       {error && <p className="error-text">{error}</p>}
       {loading && !profile ? (
-        <div className="spinner-row">Loading your collection…</div>
+        <div className="spinner-row">{t('loadingCollection')}</div>
       ) : (
         profile && (
           <>
             {deadCount > 0 && (
               <p className="muted">
-                {deadCount === 1 ? 'One animal needs' : `${deadCount} animals need`} re-hatching, play with it to
-                earn Elly back and revive it.
+                {deadCount === 1 ? t('animalsNeedRehatchOne') : t('animalsNeedRehatchMany', { count: deadCount })}
               </p>
             )}
             <div className="chip-row">
@@ -97,7 +104,7 @@ export function DashboardScreen() {
               ))}
             </div>
             {submitting ? (
-              <p className="muted spinner-row">Starting…</p>
+              <p className="muted spinner-row">{t('starting')}</p>
             ) : (
               <AnimalTree
                 animals={animals}

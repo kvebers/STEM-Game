@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
   const user = await getAuthedUser(req);
   if (!user) return jsonResponse({ error: 'Unauthorized' }, 401);
 
-  let body: { tier?: number };
+  let body: { tier?: number; locale?: string };
   try {
     body = await req.json();
   } catch {
@@ -35,6 +35,7 @@ Deno.serve(async (req) => {
   if (!Number.isInteger(tier)) {
     return jsonResponse({ error: 'tier is required' }, 400);
   }
+  const locale = body.locale === 'fr' ? 'fr' : 'en';
 
   const node = getTreeNode(tier);
   if (!node) return jsonResponse({ error: 'Unknown learning-tree node' }, 400);
@@ -60,7 +61,7 @@ Deno.serve(async (req) => {
   if (!stageAnimal) return jsonResponse({ error: 'Unknown learning-tree node' }, 400);
 
   const seed = crypto.getRandomValues(new Uint32Array(1))[0];
-  const questions = generateQuestionSetForNode(tier, seed, QUESTION_COUNT);
+  const questions = generateQuestionSetForNode(tier, seed, QUESTION_COUNT, locale);
   const aiScore = aiBaselineScore(stageAnimal.elo_threshold, QUESTION_COUNT);
 
   const { data: match, error: matchError } = await db
@@ -85,8 +86,19 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: 'Failed to create match' }, 500);
   }
 
+  // Every other question renders as multiple-choice instead of free-text —
+  // variety within a single race, not a wholesale mechanic swap. The real
+  // answer necessarily appears among `options` (that's inherent to MC: the
+  // client must see every candidate to render buttons), shuffled once here
+  // so the DB row and the response the client acts on immediately agree on
+  // the same order. `match_answer_keys` below stays the sole source
+  // scoring actually reads.
+  const optionsByIndex = questions.map((q, index) =>
+    index % 2 === 1 ? [q.answer, ...q.distractors].sort(() => Math.random() - 0.5) : null,
+  );
+
   const { error: questionsError } = await db.from('match_questions').insert(
-    questions.map((q, index) => ({ match_id: match.id, index, prompt: q.prompt })),
+    questions.map((q, index) => ({ match_id: match.id, index, prompt: q.prompt, options: optionsByIndex[index] })),
   );
   const { error: keysError } = await db.from('match_answer_keys').insert(
     questions.map((q, index) => ({ match_id: match.id, index, answer: q.answer })),
@@ -100,7 +112,7 @@ Deno.serve(async (req) => {
   return jsonResponse({
     matchId: match.id,
     topicName: node.topicName,
-    questions: questions.map((q, index) => ({ index, prompt: q.prompt })),
+    questions: questions.map((q, index) => ({ index, prompt: q.prompt, options: optionsByIndex[index] })),
     // Cosmetic only — drives the client-side race animation, not scoring
     // (that's already fixed server-side above). Safe to expose: it's the
     // AI's own aggregate target, not the player's answer key.

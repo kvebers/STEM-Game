@@ -1,4 +1,6 @@
 import { useAuthStore } from '../state/useAuthStore.js';
+import { LanguageSwitcher } from '../components/LanguageSwitcher.jsx';
+import { useT } from '../i18n/translations.js';
 
 function GoogleIcon() {
   return (
@@ -25,22 +27,24 @@ function GoogleIcon() {
 
 export function AuthScreen() {
   const signInWithGoogle = useAuthStore((s) => s.signInWithGoogle);
+  const t = useT();
 
   return (
     <div className="app-shell auth-shell">
+      <div className="auth-lang-switch">
+        <LanguageSwitcher />
+      </div>
       <div className="card auth-split-card">
         <div className="auth-image-frame">
-          <img src="/elly.png" alt="Elly, the mascot elephant" className="auth-image" />
+          <img src="/elly.png" alt={t('authImageAlt')} className="auth-image" />
         </div>
 
         <div className="auth-content">
-          <h2>Sign in to Elly</h2>
-          <p className="muted">
-            Climb the ladder, keep your animals fed, and earn Elly by racing through math challenges.
-          </p>
+          <h2>{t('authTitle')}</h2>
+          <p className="muted">{t('authSubtitle')}</p>
           <button className="btn auth-google-btn" onClick={signInWithGoogle}>
             <GoogleIcon />
-            Continue with Google
+            {t('continueWithGoogle')}
           </button>
         </div>
       </div>

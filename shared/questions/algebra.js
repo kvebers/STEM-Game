@@ -1,4 +1,5 @@
 import { randInt } from './prng.js';
+import { phrases } from './i18n.js';
 
 function signedTerm(n) {
   return n >= 0 ? ` + ${n}` : ` - ${Math.abs(n)}`;
@@ -68,9 +69,28 @@ function bothSides(rng, coeffRange, constRange) {
   return { prompt: `${lhs} = ${rhs}`, answer: x };
 }
 
-function tier10(rng) {
+function tier10(rng, locale) {
   const x = randInt(rng, 2, 15);
-  return { prompt: `x² = ${x * x}  (x > 0)`, answer: x };
+  return { prompt: `x² = ${x * x}  ${phrases(locale).positiveConstraint()}`, answer: x };
+}
+
+// Factorable quadratic (x - r)(x + s) = x² + (s-r)x - rs = 0, roots r and -s.
+// Asks for the positive root so the answer stays a single number.
+function tier11(rng, locale) {
+  const r = randInt(rng, 2, 12);
+  const s = randInt(rng, 2, 12);
+  const b = s - r;
+  const c = -r * s;
+  return {
+    prompt: `x²${signedTerm(b)}x${signedTerm(c)} = 0  ${phrases(locale).positiveSolutionNote()}`,
+    answer: r,
+  };
+}
+
+function tier12(rng) {
+  const base = randInt(rng, 2, 6);
+  const x = randInt(rng, 1, 6);
+  return { prompt: `${base}^x = ${base ** x}`, answer: x };
 }
 
 const GENERATORS = {
@@ -84,10 +104,12 @@ const GENERATORS = {
   8: (rng) => bothSides(rng, 10, 30),
   9: (rng) => bothSides(rng, 15, 60),
   10: tier10,
+  11: tier11,
+  12: tier12,
 };
 
-export function generate(tier, rng) {
-  const fn = GENERATORS[Math.min(10, Math.max(1, tier))];
-  const { prompt, answer } = fn(rng);
-  return { prompt: `Solve for x: ${prompt}`, answer: String(answer), tier };
+export function generate(tier, rng, locale = 'en') {
+  const fn = GENERATORS[Math.min(12, Math.max(1, tier))];
+  const { prompt, answer } = fn(rng, locale);
+  return { prompt: phrases(locale).solveForX(prompt), answer: String(answer), tier };
 }

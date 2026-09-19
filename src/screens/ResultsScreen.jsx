@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../state/useAuthStore.js';
 import { useCollectionStore } from '../state/useCollectionStore.js';
 import { useMatchStore } from '../state/useMatchStore.js';
+import { useT } from '../i18n/translations.js';
 
 export function ResultsScreen() {
   const navigate = useNavigate();
   const session = useAuthStore((s) => s.session);
+  const t = useT();
   const { result, questions, mode, opponentAnimal, reset } = useMatchStore();
   const fetchCollection = useCollectionStore((s) => s.fetchCollection);
   const [newlyChanged, setNewlyChanged] = useState([]);
@@ -45,11 +47,14 @@ export function ResultsScreen() {
 
   return (
     <div className="card results-card">
-      <div className="results-headline">{won ? '🎉 You won!' : drew ? '🤝 Draw' : '💪 Good effort'}</div>
+      <div className="results-headline">{won ? t('resultWon') : drew ? t('resultDraw') : t('resultEffort')}</div>
       <p className="muted">
-        You scored {result.player1_score}/{questions.length} against{' '}
-        {mode === 'pvp' ? opponentAnimal?.name ?? 'your opponent' : 'an AI baseline'} which scored{' '}
-        {result.player2_score}.
+        {t('resultScoreLine', {
+          score1: result.player1_score,
+          total: questions.length,
+          opponent: mode === 'pvp' ? opponentAnimal?.name ?? t('yourOpponentFallback') : t('vsAiBaseline'),
+          score2: result.player2_score,
+        })}
       </p>
       <div className={`elo-delta ${won ? 'positive' : drew ? '' : 'negative'}`}>
         {result.elo_delta_player1 > 0 ? '+' : ''}
@@ -60,14 +65,14 @@ export function ResultsScreen() {
         <div className="unlock-banner">
           {newlyChanged.map((a) => (
             <div key={a.stage_tier}>
-              {a.art_key} {a.name} {a.changeType === 'unlocked' ? 'unlocked!' : 're-hatched!'}
+              {a.art_key} {a.name} {a.changeType === 'unlocked' ? t('unlocked') : t('rehatched')}
             </div>
           ))}
         </div>
       )}
 
       <button className="btn btn-primary" onClick={handleBack}>
-        Back to Dashboard
+        {t('backToDashboard')}
       </button>
     </div>
   );

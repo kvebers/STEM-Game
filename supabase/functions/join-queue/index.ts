@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
   const user = await getAuthedUser(req);
   if (!user) return jsonResponse({ error: 'Unauthorized' }, 401);
 
-  let body: { tier?: number };
+  let body: { tier?: number; locale?: string };
   try {
     body = await req.json();
   } catch {
@@ -20,6 +20,7 @@ Deno.serve(async (req) => {
 
   const { tier } = body;
   if (!Number.isInteger(tier)) return jsonResponse({ error: 'tier is required' }, 400);
+  const locale = body.locale === 'fr' ? 'fr' : 'en';
 
   const node = getTreeNode(tier);
   if (!node) return jsonResponse({ error: 'Unknown learning-tree node' }, 400);
@@ -70,12 +71,22 @@ Deno.serve(async (req) => {
     // players across a shared subject, not just an exact tier) — the
     // question set must be generated for the match's real topic, not the
     // raw request.
+    // Only one player's call reaches here (the one that completed the
+    // pairing) — its locale decides the prompt language for both players in
+    // this match, since prompt text is generated once and shared.
     const seed = crypto.getRandomValues(new Uint32Array(1))[0];
-    const questions = generateQuestionSetForNode(match.stage_tier, seed, QUESTION_COUNT);
+    const questions = generateQuestionSetForNode(match.stage_tier, seed, QUESTION_COUNT, locale);
+
+    // Every other question renders as multiple-choice instead of free-text
+    // — see the matching comment in create-match/index.ts for why the real
+    // answer necessarily appears among `options`.
+    const optionsByIndex = questions.map((q, index) =>
+      index % 2 === 1 ? [q.answer, ...q.distractors].sort(() => Math.random() - 0.5) : null,
+    );
 
     const { error: questionsError } = await db
       .from('match_questions')
-      .insert(questions.map((q, index) => ({ match_id: matchId, index, prompt: q.prompt })));
+      .insert(questions.map((q, index) => ({ match_id: matchId, index, prompt: q.prompt, options: optionsByIndex[index] })));
 
     if (!questionsError) {
       await db

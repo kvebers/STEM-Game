@@ -1,11 +1,8 @@
-export function EllyBadge({ current, peak }) {
+export function EllyBadge({ current, onClick }) {
   return (
-    <div className="elly-badge">
+    <button type="button" className="elly-badge" onClick={onClick}>
       <span className="elly-badge-icon">⚡</span>
-      <div>
-        <div className="elly-badge-value">{current} Elly</div>
-        {typeof peak === 'number' && peak > current && <div className="elly-badge-peak">peak {peak}</div>}
-      </div>
-    </div>
+      <div className="elly-badge-value">{current} Elly</div>
+    </button>
   );
 }

@@ -1,4 +1,5 @@
 import { randInt, pick, gcd } from './prng.js';
+import { phrases } from './i18n.js';
 
 function reduceFraction(num, den) {
   if (den < 0) {
@@ -55,34 +56,34 @@ function tier5(rng) {
 
 const FINITE_DENOMS = [2, 4, 5, 8, 10, 20, 25, 50, 100];
 
-function tier6(rng) {
+function tier6(rng, locale) {
   const d = pick(rng, FINITE_DENOMS);
   const n = randInt(rng, 1, d - 1);
   const decimal = n / d;
-  return { prompt: `Write ${n}/${d} as a decimal`, answer: trimDecimal(decimal) };
+  return { prompt: phrases(locale).writeAsDecimal(n, d), answer: trimDecimal(decimal) };
 }
 
 function trimDecimal(value) {
   return String(Math.round(value * 1000) / 1000);
 }
 
-function tier7(rng) {
+function tier7(rng, locale) {
   const places = pick(rng, [1, 2]);
   const den = places === 1 ? 10 : 100;
   const num = randInt(rng, 1, den - 1);
   const decimalStr = (num / den).toFixed(places);
-  return { prompt: `Write ${decimalStr} as a fraction in lowest terms`, answer: reduceFraction(num, den) };
+  return { prompt: phrases(locale).writeAsFraction(decimalStr), answer: reduceFraction(num, den) };
 }
 
-function tier8(rng) {
+function tier8(rng, locale) {
   const p = randInt(rng, 1, 19) * 5;
   const k = randInt(rng, 2, 50);
   const n = k * 20;
   const result = (p / 5) * k;
-  return { prompt: `${p}% of ${n}`, answer: String(result) };
+  return { prompt: phrases(locale).percentOf(p, n), answer: String(result) };
 }
 
-function tier9(rng) {
+function tier9(rng, locale) {
   const p = randInt(rng, 1, 19) * 5;
   const k = randInt(rng, 2, 50);
   const n = k * 20;
@@ -90,12 +91,12 @@ function tier9(rng) {
   const increase = rng() < 0.5;
   const result = increase ? n + change : n - change;
   return {
-    prompt: `${n} ${increase ? 'increased' : 'decreased'} by ${p}%`,
+    prompt: phrases(locale).changedByPercent(n, increase, p),
     answer: String(result),
   };
 }
 
-function tier10(rng) {
+function tier10(rng, locale) {
   const fracNum = randInt(rng, 1, 4);
   const fracDen = randInt(rng, fracNum + 1, fracNum + 4);
   const p = randInt(rng, 1, 19) * 5;
@@ -103,7 +104,18 @@ function tier10(rng) {
   const n = k * 20;
   const percentResult = (p * n) / 100;
   const result = (percentResult * fracNum) / fracDen;
-  return { prompt: `${fracNum}/${fracDen} of ${p}% of ${n}`, answer: trimDecimal(result) };
+  return { prompt: phrases(locale).fractionOfPercentOf(fracNum, fracDen, p, n), answer: trimDecimal(result) };
+}
+
+// Solve a proportion a/b = c/x for x, scaled up from a/b by an integer
+// factor so x always comes out whole.
+function tier11(rng, locale) {
+  const a = randInt(rng, 1, 12);
+  const b = randInt(rng, 2, 12);
+  const k = randInt(rng, 2, 6);
+  const c = a * k;
+  const x = b * k;
+  return { prompt: phrases(locale).solveProportion(a, b, c), answer: String(x) };
 }
 
 const GENERATORS = {
@@ -117,10 +129,11 @@ const GENERATORS = {
   8: tier8,
   9: tier9,
   10: tier10,
+  11: tier11,
 };
 
-export function generate(tier, rng) {
-  const fn = GENERATORS[Math.min(10, Math.max(1, tier))];
-  const { prompt, answer } = fn(rng);
+export function generate(tier, rng, locale = 'en') {
+  const fn = GENERATORS[Math.min(11, Math.max(1, tier))];
+  const { prompt, answer } = fn(rng, locale);
   return { prompt, answer, tier };
 }
