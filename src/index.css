@@ -17,6 +17,11 @@
   --color-leaf-light: #7dc383;
   --radius: 14px;
   --control-height: 38px;
+  /* Shared content width for the challenge screen and the printable answer
+     sheet, so switching between them doesn't jump from edge-to-edge wide to
+     narrow (or vice versa). Matches a literal A4 width since the answer
+     sheet is pinned to that for print-preview accuracy. */
+  --content-width: 210mm;
   color-scheme: dark;
 }
 
@@ -277,13 +282,20 @@ button {
   box-shadow: 0 0 0 2px var(--color-accent);
 }
 
+/* ChallengeScreen — wraps the title/timer/race-track/question-card so they
+   all share one width instead of the race track stretching to the full
+   app-shell while the question card sat narrower inside it. */
+.game-shell {
+  width: var(--content-width);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 /* QuestionCard */
 .question-card {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-width: 420px;
-  margin: 0 auto;
 }
 
 .question-progress {
@@ -478,6 +490,34 @@ button {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
+/* ChallengeScreen header row — title plus the AI-mode quit action */
+.game-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.game-header-row .section-title {
+  margin: 24px 0 12px;
+}
+
+.quit-confirm-card {
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+}
+
+.quit-confirm-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.quit-confirm-actions .btn {
+  flex: 1;
+}
+
 /* ResultsScreen */
 .results-card {
   max-width: 420px;
@@ -555,6 +595,121 @@ button {
   font-size: 1.7rem;
   filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55));
   pointer-events: none;
+}
+
+@keyframes finish-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(242, 177, 52, 0.8));
+  }
+  50% {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 14px rgba(242, 177, 52, 1));
+  }
+}
+
+/* ClimbTrack — one of RaceTrack's alternate visual skins, picked at random
+   per match load. Same player/opponent progress numbers, just climbing a
+   tree toward the fruit instead of racing down a track. */
+.climb-visual {
+  position: relative;
+  height: 280px;
+  background: linear-gradient(180deg, #6b4a24 0%, #8a5f2c 32%, #6e4622 62%, #2e2110 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.climb-prize {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55));
+}
+
+.climb-lanes {
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 70px;
+}
+
+.climb-lane {
+  position: relative;
+  width: 10px;
+}
+
+.climb-trunk {
+  position: absolute;
+  inset: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  background: var(--color-bark-light);
+  border-radius: 4px;
+}
+
+.climb-runner {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  transition: bottom 0.5s ease;
+}
+
+.climb-runner.finished .race-runner-emoji {
+  animation: finish-glow 1s ease-in-out infinite;
+}
+
+/* FlappyTrack — another alternate visual skin, same progress numbers again,
+   flying toward the nest instead of racing or climbing. */
+.flappy-visual {
+  position: relative;
+  height: 280px;
+  background: linear-gradient(180deg, #6b4a24 0%, #8a5f2c 32%, #6e4622 62%, #2e2110 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.flappy-goal {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 1.8rem;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55));
+}
+
+.flappy-lanes {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.flappy-lane {
+  position: relative;
+  height: 2px;
+}
+
+.flappy-runner {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: left 0.5s ease;
+}
+
+.flappy-runner.finished .race-runner-emoji {
+  animation: finish-glow 1s ease-in-out infinite;
 }
 
 /* AnimalTree (3D, react-three-fiber) — sits fixed behind the whole screen,
@@ -816,6 +971,79 @@ button {
   width: 100%;
 }
 
+.btn-small {
+  height: 30px;
+  padding: 0 14px;
+  font-size: 0.85rem;
+}
+
+.nickname-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.nickname-value {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.nickname-editor {
+  margin-bottom: 8px;
+}
+
+.nickname-input {
+  width: 100%;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.nickname-editor-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* LeaderboardScreen */
+.leaderboard-card {
+  padding: 8px 20px;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.leaderboard-row:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-row-you {
+  color: var(--color-accent);
+}
+
+.leaderboard-rank {
+  width: 28px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.leaderboard-row-you .leaderboard-rank {
+  color: var(--color-accent);
+}
+
+.leaderboard-name {
+  flex: 1;
+}
+
+.leaderboard-elo {
+  font-weight: 700;
+}
+
 /* PrintScreen */
 @page {
   size: A4;
@@ -837,7 +1065,7 @@ button {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  width: 210mm;
+  width: var(--content-width);
   max-width: 100%;
   margin: 4px auto 16px;
 }
@@ -873,7 +1101,7 @@ button {
 .print-answer-key {
   background: #fffaf0;
   color: #241505;
-  width: 210mm;
+  width: var(--content-width);
   min-height: 297mm;
   max-width: 100%;
   padding: 15mm;
@@ -885,7 +1113,7 @@ button {
 .print-tips {
   background: #fffaf0;
   color: #241505;
-  width: 210mm;
+  width: var(--content-width);
   max-width: 100%;
   padding: 15mm;
   box-sizing: border-box;

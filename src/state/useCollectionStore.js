@@ -44,4 +44,11 @@ export const useCollectionStore = create((set, get) => ({
       set({ error: error.message, loading: false });
     }
   },
+
+  updateDisplayName: async (displayName) => {
+    const { data, error } = await supabase.rpc('fn_update_display_name', { p_display_name: displayName });
+    if (error) throw new Error(error.message);
+    set((state) => ({ profile: { ...state.profile, ...data } }));
+    return data;
+  },
 }));

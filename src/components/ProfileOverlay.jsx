@@ -47,6 +47,71 @@ function TopicRow({ topic, language }) {
   );
 }
 
+function NicknameEditor({ profile }) {
+  const updateDisplayName = useCollectionStore((s) => s.updateDisplayName);
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(profile.display_name ?? '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const t = useT();
+
+  if (!editing) {
+    return (
+      <div className="nickname-row">
+        <span className="nickname-value">{profile.display_name}</span>
+        <button
+          type="button"
+          className="btn btn-secondary btn-small"
+          onClick={() => {
+            setValue(profile.display_name ?? '');
+            setError(null);
+            setEditing(true);
+          }}
+        >
+          {t('changeNickname')}
+        </button>
+      </div>
+    );
+  }
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      await updateDisplayName(value);
+      setEditing(false);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="nickname-editor">
+      <input
+        type="text"
+        className="question-input nickname-input"
+        value={value}
+        maxLength={20}
+        placeholder={t('nicknamePlaceholder')}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+        autoFocus
+      />
+      <div className="nickname-editor-actions">
+        <button type="button" className="btn btn-primary btn-small" onClick={handleSave} disabled={saving}>
+          {saving ? t('saving') : t('save')}
+        </button>
+        <button type="button" className="btn btn-secondary btn-small" onClick={() => setEditing(false)} disabled={saving}>
+          {t('cancel')}
+        </button>
+      </div>
+      {error && <p className="error-text">{error}</p>}
+    </div>
+  );
+}
+
 export function ProfileOverlay({ onClose }) {
   const { profile, stageAnimals } = useCollectionStore();
   const [loading, setLoading] = useState(true);
@@ -91,6 +156,7 @@ export function ProfileOverlay({ onClose }) {
     <div className="profile-overlay-backdrop" onClick={onClose}>
       <div className="card profile-overlay" onClick={(e) => e.stopPropagation()}>
         <h2>{t('yourProfile')}</h2>
+        {profile && <NicknameEditor profile={profile} />}
         {profile && <p className="muted">{t('peakElly', { count: profile.peak_elo })}</p>}
 
         {loading && <p className="muted">{t('loadingMatchHistory')}</p>}

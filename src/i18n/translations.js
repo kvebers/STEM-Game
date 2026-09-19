@@ -15,7 +15,7 @@ const TRANSLATIONS = {
 
     pvpSearchTitle: 'Live Match',
     modePractice: 'Practice (vs AI)',
-    modeCompete: 'Compete (Live PvP)',
+    modeCompete: 'Compete',
     modeLearn: '📖 Learn',
     searchingOpponent: 'Searching for an opponent…',
     cancel: 'Cancel',
@@ -31,6 +31,8 @@ const TRANSLATIONS = {
     you: 'You',
     opponent: 'Opponent',
     ai: 'AI',
+    quitMatch: 'Quit',
+    quitConfirm: "Quit this match? Your progress won't be saved.",
 
     resultWon: '🎉 You won!',
     resultDraw: '🤝 Draw',
@@ -61,6 +63,12 @@ const TRANSLATIONS = {
     onlyTopicPlayed: 'Only topic played so far',
     strengths: 'Strengths',
     weaknesses: 'Weaknesses',
+    changeNickname: 'Change nickname',
+    nicknamePlaceholder: 'Your nickname',
+    save: 'Save',
+    saving: 'Saving…',
+
+    leaderboardTitle: 'Leaderboard',
 
     questionProgress: 'Question {index} of {total}',
     yourAnswerPlaceholder: 'Your answer',
@@ -94,7 +102,7 @@ const TRANSLATIONS = {
 
     pvpSearchTitle: 'Match en direct',
     modePractice: "Entraînement (contre l'IA)",
-    modeCompete: 'Compétition (JcJ en direct)',
+    modeCompete: 'Compétition',
     modeLearn: '📖 Apprendre',
     searchingOpponent: "Recherche d'un adversaire…",
     cancel: 'Annuler',
@@ -110,6 +118,8 @@ const TRANSLATIONS = {
     you: 'Vous',
     opponent: 'Adversaire',
     ai: 'IA',
+    quitMatch: 'Quitter',
+    quitConfirm: 'Quitter cette partie ? Votre progression ne sera pas enregistrée.',
 
     resultWon: '🎉 Vous avez gagné !',
     resultDraw: '🤝 Match nul',
@@ -140,6 +150,12 @@ const TRANSLATIONS = {
     onlyTopicPlayed: 'Seul sujet joué jusqu’à présent',
     strengths: 'Points forts',
     weaknesses: 'Points faibles',
+    changeNickname: 'Changer de pseudo',
+    nicknamePlaceholder: 'Votre pseudo',
+    save: 'Enregistrer',
+    saving: 'Enregistrement…',
+
+    leaderboardTitle: 'Classement',
 
     questionProgress: 'Question {index} sur {total}',
     yourAnswerPlaceholder: 'Votre réponse',

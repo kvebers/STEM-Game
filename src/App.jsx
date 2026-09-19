@@ -7,6 +7,7 @@ import { DashboardScreen } from './screens/DashboardScreen.jsx';
 import { ChallengeScreen } from './screens/ChallengeScreen.jsx';
 import { ResultsScreen } from './screens/ResultsScreen.jsx';
 import { PrintScreen } from './screens/PrintScreen.jsx';
+import { LeaderboardScreen } from './screens/LeaderboardScreen.jsx';
 import { EllyBadge } from './components/EllyBadge.jsx';
 import { ProfileOverlay } from './components/ProfileOverlay.jsx';
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx';
@@ -27,6 +28,9 @@ function TopBar() {
         </div>
         <div className="top-bar-right">
           <LanguageSwitcher />
+          <Link to="/leaderboard" className="btn btn-secondary btn-icon" title={t('leaderboardTitle')}>
+            🏆
+          </Link>
           <Link to="/print" className="btn btn-secondary btn-icon" title={t('printTitle')}>
             🖨️
           </Link>
@@ -71,6 +75,7 @@ export default function App() {
           <Route path="/challenge" element={<ChallengeScreen />} />
           <Route path="/results" element={<ResultsScreen />} />
           <Route path="/print" element={<PrintScreen />} />
+          <Route path="/leaderboard" element={<LeaderboardScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
