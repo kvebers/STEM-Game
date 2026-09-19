@@ -82,18 +82,33 @@ export const useMatchStore = create((set, get) => ({
   startPvpSearch: async (tier) => {
     cleanup();
     set({ ...initialState, mode: 'pvp', tier, pvpSearching: true });
+    console.log('[pvp] startPvpSearch called with tier', tier);
 
     const {
       data: { user },
+      error: getUserError,
     } = await supabase.auth.getUser();
+    console.log('[pvp] supabase.auth.getUser() ->', { userId: user?.id, getUserError });
+
+    if (!user) {
+      console.error('[pvp] no authenticated user — aborting search', getUserError);
+      set({ error: getUserError?.message || 'Not signed in', pvpSearching: false });
+      cleanup();
+      return;
+    }
 
     const attemptJoin = async () => {
+      console.log('[pvp] attemptJoin firing, tier =', tier);
       try {
         const data = await invokeFunction('join-queue', { tier, locale: useLanguageStore.getState().language });
+        console.log('[pvp] join-queue result', data);
         if (data.matched) {
           get()._onPvpMatched(data.matchId);
+        } else {
+          console.log('[pvp] not matched yet, reason =', data.reason ?? '(none given)');
         }
       } catch (error) {
+        console.error('[pvp] attemptJoin threw — closing search screen', error);
         set({ error: error.message, pvpSearching: false });
         cleanup();
       }
@@ -102,7 +117,10 @@ export const useMatchStore = create((set, get) => ({
     // Realtime is the primary signal; a slow poll is just a safety net in
     // case an event is missed. Re-invoking join-queue while still waiting
     // is safe/idempotent — see fn_join_queue.
-    const unsubscribeQueue = subscribeToQueueRow(user.id, (matchId) => get()._onPvpMatched(matchId));
+    const unsubscribeQueue = subscribeToQueueRow(user.id, (matchId) => {
+      console.log('[pvp] realtime queue-row update matched me to', matchId);
+      get()._onPvpMatched(matchId);
+    });
     const pollInterval = setInterval(attemptJoin, 8000);
     cleanupFns.push(unsubscribeQueue, () => clearInterval(pollInterval));
 
@@ -119,6 +137,7 @@ export const useMatchStore = create((set, get) => ({
   },
 
   _onPvpMatched: async (matchId) => {
+    console.log('[pvp] _onPvpMatched called with', matchId);
     if (get().matchId === matchId) return; // already wired up (e.g. duplicate event)
     cleanup();
 
@@ -127,8 +146,10 @@ export const useMatchStore = create((set, get) => ({
       .select('status, stage_tier, player1_id, player2_id, player1_animal_stage, player2_animal_stage')
       .eq('id', matchId)
       .single();
+    console.log('[pvp] matches fetch ->', { match, error });
 
     if (error || !match) {
+      console.error('[pvp] could not load matched row — closing search screen', error);
       set({ error: error?.message ?? 'Match not found', pvpSearching: false });
       return;
     }

@@ -22,12 +22,20 @@ export const supabase = createClient(
 );
 
 export async function invokeFunction(name, body) {
+  console.log(`[invokeFunction] -> ${name}`, body);
   const { data, error } = await supabase.functions.invoke(name, { body });
   if (error) {
     // supabase-js wraps the function's JSON error body in `context`; surface
     // its message when present so screens can show something useful.
     const detail = await error.context?.json?.().catch(() => null);
+    console.error(`[invokeFunction] <- ${name} FAILED`, {
+      status: error.context?.status,
+      detail,
+      errorMessage: error.message,
+      error,
+    });
     throw new Error(detail?.error || error.message);
   }
+  console.log(`[invokeFunction] <- ${name} OK`, data);
   return data;
 }

@@ -36,6 +36,7 @@ export function DashboardScreen() {
   const deadCount = animals.filter((a) => a.unlocked && !a.alive).length;
 
   const handlePick = async (animal) => {
+    console.log('[dashboard] handlePick', { mode, animal, submitting, pvpSearching });
     if (mode === 'learn') {
       setLearningAnimal(animal);
       return;
